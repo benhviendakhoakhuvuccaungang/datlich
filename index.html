@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lịch - Bệnh viện ĐKKV Cầu Ngang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .form-group select,
+        .form-group input[type="date"],
+        .form-group input[type="tel"] {
+            max-width: 100%;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 15px;
+                margin-top: 40px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            input[type="submit"] {
+                font-size: 18px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h2>Đặt lịch - Bệnh viện ĐKKV Cầu Ngang</h2>
+        <form id="appointmentForm" method="post"
+            action="https://docs.google.com/forms/d/e/1FAIpQLSe48u0TR0HEIoi_Hs7vOCvbMOToM-A5I2I3n9QW7qjj5t7SJg/formResponse"
+            target="hidden_iframe" onsubmit="return handleSubmit()">
+
+            <!-- Họ và Tên -->
+            <div class="form-group">
+                <label for="entry.321628103">Họ và Tên:</label>
+                <input type="text" id="entry.321628103" name="entry.321628103" required>
+            </div>
+
+            <!-- Giới Tính -->
+            <div class="form-group">
+                <label>Giới Tính:</label>
+                <label><input type="radio" name="entry.1310503144" value="Nam"> Nam</label>
+                <label><input type="radio" name="entry.1310503144" value="Nữ"> Nữ</label>
+            </div>
+
+            <!-- Địa Chỉ -->
+            <div class="form-group">
+                <label for="entry.1346025464">Địa Chỉ:</label>
+                <input type="text" id="entry.1346025464" name="entry.1346025464" required>
+            </div>
+
+            <!-- Ngày Sinh -->
+            <div class="form-group">
+                <label for="entry.1256583190">Ngày Tháng Năm Sinh:</label>
+                <input type="date" id="entry.1256583190" name="entry.1256583190" required>
+            </div>
+
+            <!-- Số CCCD -->
+            <div class="form-group">
+                <label for="entry.98234257">Số CCCD:</label>
+                <input type="text" id="entry.98234257" name="entry.98234257" required>
+            </div>
+
+            <!-- Bảo Hiểm Y Tế -->
+            <div class="form-group">
+                <label for="entry.42051546">Bảo Hiểm Y Tế (Nếu có, không bắt buộc):</label>
+                <input type="text" id="entry.42051546" name="entry.42051546">
+            </div>
+
+            <!-- Số Điện Thoại -->
+            <div class="form-group">
+                <label for="entry.800489395">Số Điện Thoại:</label>
+                <input type="tel" id="entry.800489395" name="entry.800489395" required>
+            </div>
+
+            <!-- Nội Dung Cần Đặt Lịch -->
+            <div class="form-group">
+                <label for="entry.2093417730">Nội Dung Cần Đặt Lịch:</label>
+                <select id="entry.2093417730" name="entry.2093417730" onchange="checkSymptomOption()" required>
+                    <option value="">--Chọn--</option>
+                    <option value="Xin Giấy Chuyển Viện">Xin Giấy Chuyển Viện</option>
+                    <option value="Khám sức khỏe">Khám sức khỏe</option>
+                    <option value="Triệu chứng">Khám bệnh:</option>
+                </select>
+            </div>
+
+            <!-- Triệu Chứng -->
+            <div id="symptom-field" class="form-group" style="display: none;">
+                <label for="symptoms">Triệu Chứng:</label>
+                <textarea id="symptoms" name="entry.2093417730" rows="4" cols="50"></textarea>
+            </div>
+
+            <!-- Thời gian đặt -->
+            <div class="form-group">
+                <label for="entry.834604958">Ngày Đặt Lịch:</label><br>
+                <input type="date" id="entry.834604958" name="entry.834604958" required><br><br>
+                <label for="time">Chọn Giờ:</label>
+                <select id="entry.2006374848" name="entry.2006374848" required>
+                    <option value="7:30 AM">7:30 AM</option>
+                    <option value="8:00 AM">8:00 AM</option>
+                    <option value="8:30 AM">8:30 AM</option>
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="9:30 AM">9:30 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="10:30 AM">10:30 AM</option>
+                    <option value="1:30 PM">1:30 PM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="2:30 PM">2:30 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="3:30 PM">3:30 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                    <option value="4:30 PM">4:30 PM</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Đặt Lịch">
+            </div>
+            <div class="button-container">
+                <button type="button" class="view-button" onclick="window.location.href='inketqua.html'">Xem Phiếu Đặt
+                    Lịch</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function checkSymptomOption() {
+            const symptomField = document.getElementById('symptom-field');
+            const selectedOption = document.getElementById('entry.2093417730').value;
+            symptomField.style.display = selectedOption === "Triệu chứng" ? 'block' : 'none';
+        }
+
+        function validateForm() {
+            const name = document.getElementById("entry.321628103").value;
+            const gender = document.querySelector('input[name="entry.1310503144"]:checked');
+            const birthDate = document.getElementById("entry.1256583190").value;
+            const cccd = document.getElementById("entry.98234257").value;
+            const phone = document.getElementById("entry.800489395").value;
+            const appointmentDate = document.getElementById("entry.834604958").value;
+            const time = document.getElementById("entry.2006374848").value;
+
+            if (!name || !gender || !birthDate || !cccd || !phone || !appointmentDate || !time) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return false;
+            }
+            // Check if the appointment date is a weekend (Saturday or Sunday)
+            const appointmentDay = new Date(appointmentDate).getDay();
+            if (appointmentDay === 0 || appointmentDay === 6) {
+                // Thông báo lỗi trên thiết bị di động (không dùng alert)
+                displayMessage("Chỉ có thể chọn ngày làm việc (Thứ Hai đến Thứ Sáu).", "error");
+                return false;
+            }
+
+            // Validate CCCD: 12 digits starting with 0
+            const cccdPattern = /^0\d{11}$/;
+            if (!cccdPattern.test(cccd)) {
+                displayMessage("Số CCCD không hợp lệ.", "error");
+                return false;
+            }
+
+            // Validate phone: 10 digits starting with 0
+            const phonePattern = /^0\d{9}$/;
+            if (!phonePattern.test(phone)) {
+                displayMessage("Số điện thoại không hợp lệ.", "error");
+                return false;
+            }
+
+            // Check if the appointment date is in the future
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            if (appointmentDate <= today) {
+                displayMessage("Ngày đặt lịch phải lớn hơn ngày hôm nay.", "error");
+                return false;
+            }
+            return true;
+        }
+        function handleSubmit() {
+            if (!validateForm()) {
+                return false; // Prevent form submission if validation fails
+            }
+
+            // Hiển thị thông báo thành công
+            displayMessage("Đặt lịch thành công! Vui lòng bấm OK để lấy số thứ tự và thời gian đã đặt lịch.", "success");
+
+            // Sau khi hiển thị thông báo, đợi 3 giây để cho người dùng có thời gian đọc thông báo
+            setTimeout(() => {
+                // Chuyển hướng đến trang inketqua.html sau 3 giây
+                window.location.href = "inketqua.html";
+            }, 3000);
+
+            return true;
+        }
+
+        function handleSubmit() {
+            if (!validateForm()) {
+                return false; // Prevent form submission if validation fails
+            }
+
+            // Hiển thị thông báo thành công với nút OK
+            displayMessage("Đặt lịch thành công! Vui lòng bấm OK để chuyển sang trang Lấy Phiếu Đặt Lịch và lấy số thứ tự.", "success");
+
+            return true; // Allow form submission to continue
+        }
+
+        function displayMessage(message, type) {
+            // Remove any existing message to avoid duplicate messages
+            const existingMessage = document.querySelector('.message-element');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            // Create the message element
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message-element");  // Class for easy removal
+            messageElement.textContent = message;
+            messageElement.style.position = "fixed";
+            messageElement.style.top = "20px";
+            messageElement.style.left = "50%";
+            messageElement.style.transform = "translateX(-50%)";
+            messageElement.style.padding = "10px";
+            messageElement.style.backgroundColor = type === "error" ? "#f44336" : "#4CAF50";
+            messageElement.style.color = "white";
+            messageElement.style.borderRadius = "5px";
+            messageElement.style.zIndex = "1000";
+            messageElement.style.textAlign = "center";
+            messageElement.style.fontSize = "16px";
+            messageElement.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+
+            // Create OK button
+            const okButton = document.createElement("button");
+            okButton.textContent = "OK";
+            okButton.style.marginTop = "10px";
+            okButton.style.padding = "8px 16px";
+            okButton.style.fontSize = "16px";
+            okButton.style.backgroundColor = "#ff9800";
+            okButton.style.color = "white";
+            okButton.style.border = "none";
+            okButton.style.borderRadius = "5px";
+            okButton.style.cursor = "pointer";
+
+            // Add click event to remove message on "OK"
+            okButton.addEventListener("click", function () {
+                messageElement.remove();
+                if (type === "success") {
+                    window.location.href = "inketqua.html";  // Only redirect if success
+                }
+            });
+
+            // Append OK button to the message
+            messageElement.appendChild(okButton);
+
+            // Append message element to the body
+            document.body.appendChild(messageElement);
+        }
+
+    </script>
+    <iframe id="hidden_iframe" name="hidden_iframe" style="display:none"></iframe>
+
+</body>
+
+</html>

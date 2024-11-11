@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Căn giữa toàn bộ nội dung của trang */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* Định dạng ô nhập CCCD */
+    #cccd-input {
+      font-size: 1.2em;
+      padding: 10px;
+      width: 60%;
+      max-width: 300px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Định dạng các nút */
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Định dạng phần hiển thị thông tin */
+    #data-list {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Định dạng cho phần tử thông tin */
+    .data-box {
+      background-color: #fff;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      max-width: 50%;
+      text-align: left;
+      /* Smaller font size */
+      /* Align content to the left */
+    }
+
+    /* Tăng kích thước cột L */
+    .large-column-l {
+      font-size: 2em;
+      color: #ff5722;
+    }
+
+    /* Định dạng cho các nút quay lại và tải lại */
+    .extra-buttons {
+      margin-top: 20px;
+    }
+
+    .extra-buttons button {
+      background-color: #008CBA;
+    }
+
+    .extra-buttons button:hover {
+      background-color: #007B9E;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>NHẤP SỐ CCCD ĐỂ HIỆN THỊ THÔNG TIN ĐẶT LỊCH</h1>
+  <h2>Lưu ý nếu Số Thứ tự là "NULL" vui lòng bấm "TẢI LẠI TRANG" để hiển thị số thứ tự !!!</h2>
+  <h3>Nếu nhập sai thông tin vui lòng "QUAY LẠI TRANG ĐẶT LỊCH" điền lại thông tin! Hệ thống chỉ lưu lại thông tin mới
+    nhất</h3>
+  <input type="text" id="cccd-input" placeholder="Nhập Số CCCD" />
+  <button onclick="searchData()">TÌM THÔNG TIN</button>
+
+  <div id="data-list"></div>
+
+  <div class="extra-buttons">
+    <button onclick="window.location.href='index.html'">QUAY LẠI TRANG ĐẶT LỊCH</button>
+    <button onclick="window.location.reload()">TẢI LẠI TRANG</button>
+    <button onclick="generateImage()">LƯU PHIẾU ĐẶT LỊCH</button>
+  </div>
+
+  <script>
+    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1-xXGLbztHYGzPIBtMwIDH-Ni1TrRtk6dmh6276XVhgo/gviz/tq?tqx=out:json';
+    let sheetData = [];
+
+    function loadData() {
+      google.charts.load('current', {'packages': ['table']});
+      google.charts.setOnLoadCallback(function () {
+        var query = new google.visualization.Query(SPREADSHEET_URL);
+        query.send(function (response) {
+          const data = response.getDataTable();
+          for (let i = 0; i < data.getNumberOfRows(); i++) {
+            let rowData = {};
+            for (let j = 0; j < data.getNumberOfColumns(); j++) {
+              rowData[data.getColumnLabel(j)] = data.getValue(i, j);
+            }
+            sheetData.push(rowData);
+          }
+        });
+      });
+    }
+
+    function searchData() {
+      const cccdInput = document.getElementById('cccd-input').value;
+      const dataList = document.getElementById('data-list');
+      dataList.innerHTML = '';
+      let highestTimeRecord = null;
+      let highestTime = -Infinity;
+
+      sheetData.forEach(row => {
+        const cccd = row['Số CCCD'];
+        const time = row['Thời gian đặt lịch'];
+        if (cccd === cccdInput) {
+          const timeValue = new Date(time).getTime();
+          if (timeValue > highestTime) {
+            highestTime = timeValue;
+            highestTimeRecord = row;
+          }
+        }
+      });
+
+      if (highestTimeRecord) {
+        let listItem = document.createElement('div');
+        listItem.classList.add('data-box');
+
+        let itemContent = '';
+        for (let key in highestTimeRecord) {
+          if (key === 'Cột A') continue;
+          if (key === 'Cột L') {
+            itemContent += `<strong>${key}:</strong> <span class="large-column-l">${highestTimeRecord[key]}</span><br>`;
+          } else {
+            itemContent += `<strong>${key}:</strong> ${highestTimeRecord[key]}<br>`;
+          }
+        }
+
+        listItem.innerHTML = itemContent;
+        dataList.appendChild(listItem);
+      } else {
+        dataList.innerHTML = '<div class="data-box">Không tìm thấy thông tin cho số CCCD này.</div>';
+      }
+    }
+
+    function generateImage() {
+      const dataList = document.getElementById('data-list');
+      if (dataList.innerHTML === '') {
+        alert("Vui lòng tìm kiếm thông tin trước khi lưu.");
+        return;
+      }
+
+      html2canvas(dataList).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'phieu_dat_lich.png';
+        link.click();
+      });
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+
+</html>
