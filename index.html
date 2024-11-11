@@ -240,7 +240,7 @@
             const appointmentDay = new Date(appointmentDate).getDay();
             if (appointmentDay === 0 || appointmentDay === 6) {
                 // Thông báo lỗi trên thiết bị di động (không dùng alert)
-                displayMessage("Chỉ có thể chọn ngày làm việc (Thứ Hai đến Thứ Sáu).", "error");
+                displayMessage("Chỉ có thể chọn ngày đặt lịch (Thứ Hai đến Thứ Sáu).", "error");
                 return false;
             }
 
