@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    /* Căn giữa toàn bộ nội dung của trang */
+    /* General body styles for mobile */
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 20px;
+      padding: 10px;
       background-color: #f4f4f4;
     }
 
     h1 {
-      font-size: 2.5em;
+      font-size: 1.8em;
       color: #333;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    /* Định dạng ô nhập CCCD */
+    h2, h3 {
+      font-size: 1em;
+      color: #555;
+    }
+
+    /* Input field styling */
     #cccd-input {
-      font-size: 1.2em;
-      padding: 10px;
-      width: 60%;
+      font-size: 1em;
+      padding: 8px;
+      width: 90%;
       max-width: 300px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
 
-    /* Định dạng các nút */
+    /* Button styling for mobile */
     button {
-      font-size: 1.2em;
-      padding: 10px 20px;
-      margin: 10px;
+      font-size: 1em;
+      padding: 8px 15px;
+      margin: 8px;
       background-color: #4CAF50;
       color: white;
       border: none;
@@ -48,54 +52,62 @@
       background-color: #45a049;
     }
 
-    /* Định dạng phần hiển thị thông tin */
+    /* Data display styling */
     #data-list {
-      margin-top: 20px;
-      font-size: 1.5em;
+      margin-top: 15px;
+      font-size: 1em;
       color: #333;
-      line-height: 1.6;
+      line-height: 1.4;
     }
 
-    /* Định dạng cho phần tử thông tin */
+    /* Box for data display */
     .data-box {
       background-color: #fff;
-      padding: 20px;
+      padding: 15px;
       border: 2px solid #ccc;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
-      max-width: 50%;
+      margin: 15px auto;
+      max-width: 90%;
       text-align: left;
-      /* Smaller font size */
-      /* Align content to the left */
     }
 
-    /* Tăng kích thước cột L */
+    /* Highlight large text for column L */
     .large-column-l {
-      font-size: 2em;
+      font-size: 1.5em;
       color: #ff5722;
     }
 
-    /* Định dạng cho các nút quay lại và tải lại */
+    /* Extra buttons for navigation and reload */
     .extra-buttons {
-      margin-top: 20px;
+      margin-top: 15px;
     }
 
     .extra-buttons button {
+      font-size: 1em;
+      padding: 8px 15px;
       background-color: #008CBA;
     }
 
     .extra-buttons button:hover {
       background-color: #007B9E;
     }
+
+    /* Footer styling */
+    footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #555;
+    }
   </style>
 </head>
 
 <body>
   <h1>NHẬP SỐ CCCD ĐỂ HIỆN THỊ THÔNG TIN ĐẶT LỊCH</h1>
-  <h2>Lưu ý nếu Số Thứ tự là "NULL" vui lòng bấm "TẢI LẠI TRANG" để hiển thị số thứ tự !!!</h2>
-  <h3>Nếu nhập sai thông tin vui lòng "QUAY LẠI TRANG ĐẶT LỊCH" điền lại thông tin! Hệ thống chỉ lưu lại thông tin mới
-    nhất</h3>
+  <h2>Lưu ý: Nếu Số Thứ tự là "NULL", vui lòng bấm "TẢI LẠI TRANG" để hiển thị số thứ tự!</h2>
+  <h3>Nếu nhập sai thông tin, vui lòng "QUAY LẠI TRANG ĐẶT LỊCH" để điền lại. Hệ thống chỉ lưu lại thông tin mới nhất.</h3>
+
   <input type="text" id="cccd-input" placeholder="Nhập Số CCCD" />
   <button onclick="searchData()">TÌM THÔNG TIN</button>
 
@@ -186,7 +198,7 @@
     window.onload = loadData;
   </script>
 </body>
-<footer style="text-align: center; margin-top: 20px; font-size: 14px; color: #555;">
+<footer>
     © Bản quyền thuộc Phòng CNTT - Bệnh viện ĐKKV Cầu Ngang - 2024
 </footer>
 </html>
