@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    /* General body styles for mobile */
+    /* General styles remain unchanged */
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -20,12 +21,12 @@
       margin-bottom: 15px;
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       font-size: 1em;
       color: #555;
     }
 
-    /* Input field styling */
     #cccd-input {
       font-size: 1em;
       padding: 8px;
@@ -36,7 +37,6 @@
       border-radius: 5px;
     }
 
-    /* Button styling for mobile */
     button {
       font-size: 1em;
       padding: 8px 15px;
@@ -52,7 +52,6 @@
       background-color: #45a049;
     }
 
-    /* Data display styling */
     #data-list {
       margin-top: 15px;
       font-size: 1em;
@@ -60,7 +59,6 @@
       line-height: 1.4;
     }
 
-    /* Box for data display */
     .data-box {
       background-color: #fff;
       padding: 15px;
@@ -72,13 +70,15 @@
       text-align: left;
     }
 
-    /* Highlight large text for column L */
-    .large-column-l {
-      font-size: 1.5em;
-      color: #ff5722;
+    .highlight {
+      border: 3px solid #4CAF50;
     }
 
-    /* Extra buttons for navigation and reload */
+    .loading {
+      font-size: 1.2em;
+      color: #666;
+    }
+
     .extra-buttons {
       margin-top: 15px;
     }
@@ -93,7 +93,6 @@
       background-color: #007B9E;
     }
 
-    /* Footer styling */
     footer {
       text-align: center;
       margin-top: 15px;
@@ -106,9 +105,11 @@
 <body>
   <h1>NHẬP SỐ CCCD ĐỂ HIỆN THỊ THÔNG TIN ĐẶT LỊCH</h1>
   <h2>Lưu ý: Nếu Số Thứ tự là "NULL", vui lòng bấm "TẢI LẠI TRANG" để hiển thị số thứ tự!</h2>
-  <h3>Nếu nhập sai thông tin, vui lòng "QUAY LẠI TRANG ĐẶT LỊCH" để điền lại. Hệ thống chỉ lưu lại thông tin mới nhất.</h3>
+  <h3>Nếu nhập sai thông tin, vui lòng "QUAY LẠI TRANG ĐẶT LỊCH" để điền lại. Hệ thống chỉ lưu lại thông tin mới nhất.
+  </h3>
 
   <input type="text" id="cccd-input" placeholder="Nhập Số CCCD" />
+  <div id="loading-indicator" class="loading" style="display: none;">Đang tải dữ liệu, vui lòng chờ...</div>
   <button onclick="searchData()">TÌM THÔNG TIN</button>
 
   <div id="data-list"></div>
@@ -124,10 +125,17 @@
     let sheetData = [];
 
     function loadData() {
+      document.getElementById('loading-indicator').style.display = 'block';
       google.charts.load('current', {'packages': ['table']});
       google.charts.setOnLoadCallback(function () {
         var query = new google.visualization.Query(SPREADSHEET_URL);
         query.send(function (response) {
+          if (response.isError()) {
+            alert('Lỗi khi tải dữ liệu: ' + response.getMessage());
+            document.getElementById('loading-indicator').style.display = 'none';
+            return;
+          }
+
           const data = response.getDataTable();
           for (let i = 0; i < data.getNumberOfRows(); i++) {
             let rowData = {};
@@ -136,12 +144,23 @@
             }
             sheetData.push(rowData);
           }
+          document.getElementById('loading-indicator').style.display = 'none';
         });
       });
     }
 
+    let searchTimeout;
+    function debounceSearch(callback, delay) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(callback, delay);
+    }
+
+    document.getElementById('cccd-input').addEventListener('input', () => {
+      debounceSearch(searchData, 500);
+    });
+
     function searchData() {
-      const cccdInput = document.getElementById('cccd-input').value;
+      const cccdInput = document.getElementById('cccd-input').value.trim();
       const dataList = document.getElementById('data-list');
       dataList.innerHTML = '';
       let highestTimeRecord = null;
@@ -161,16 +180,12 @@
 
       if (highestTimeRecord) {
         let listItem = document.createElement('div');
-        listItem.classList.add('data-box');
+        listItem.classList.add('data-box', 'highlight');
 
         let itemContent = '';
         for (let key in highestTimeRecord) {
           if (key === 'Cột A') continue;
-          if (key === 'Cột L') {
-            itemContent += `<strong>${key}:</strong> <span class="large-column-l">${highestTimeRecord[key]}</span><br>`;
-          } else {
-            itemContent += `<strong>${key}:</strong> ${highestTimeRecord[key]}<br>`;
-          }
+          itemContent += `<strong>${key}:</strong> ${highestTimeRecord[key]}<br>`;
         }
 
         listItem.innerHTML = itemContent;
@@ -188,10 +203,13 @@
       }
 
       html2canvas(dataList).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'phieu_dat_lich.png';
-        link.click();
+        canvas.toBlob(blob => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'phieu_dat_lich.png';
+          link.click();
+          URL.revokeObjectURL(link.href);
+        });
       });
     }
 
@@ -199,6 +217,7 @@
   </script>
 </body>
 <footer>
-    © Bản quyền thuộc Phòng CNTT - Bệnh viện ĐKKV Cầu Ngang - 2024
+  © Bản quyền thuộc Phòng CNTT - Bệnh viện ĐKKV Cầu Ngang - 2024
 </footer>
+
 </html>
