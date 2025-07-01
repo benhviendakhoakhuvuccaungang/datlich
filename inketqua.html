@@ -353,7 +353,7 @@
             line-height: 1.6;
         }
 
-        .zalo-open-btn {
+        .zalo-action-btn {
             margin-top: 25px;
             padding: 12px 30px;
             border: 2px solid white;
@@ -365,10 +365,9 @@
             font-size: 1.1em;
             transition: all 0.3s ease;
             text-decoration: none;
-            /* For the 'a' tag */
         }
 
-        .zalo-open-btn:hover {
+        .zalo-action-btn:hover {
             background: white;
             color: #4CAF50;
         }
@@ -527,9 +526,9 @@
     <div id="zalo-blocker" class="zalo-blocker">
         <div class="zalo-blocker-content">
             <h2>Vui lòng mở bằng trình duyệt khác</h2>
-            <p>Trang web này không hỗ trợ trình duyệt tích hợp của Zalo. Để sử dụng đầy đủ chức năng, vui lòng mở liên
-                kết này bằng trình duyệt web như Chrome hoặc Safari.</p>
-            <a href="#" id="open-in-browser-link" class="zalo-open-btn" target="_blank">Mở bằng trình duyệt</a>
+            <p>Trang web này không hỗ trợ trình duyệt tích hợp của Zalo. Để sử dụng đầy đủ chức năng, vui lòng sao chép
+                đường dẫn và mở bằng trình duyệt web như Chrome hoặc Safari.</p>
+            <button class="zalo-action-btn" onclick="copyLink()">Sao chép đường dẫn</button>
         </div>
     </div>
 
@@ -587,9 +586,27 @@
             const userAgent = navigator.userAgent;
             if (/Zalo/i.test(userAgent)) {
                 document.getElementById('zalo-blocker').style.display = 'flex';
-                // Set the href for the link
-                document.getElementById('open-in-browser-link').href = window.location.href;
             }
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            const textarea = document.createElement('textarea');
+            textarea.value = url;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const copyButton = document.querySelector('.zalo-action-btn');
+            const originalText = copyButton.innerText;
+            copyButton.innerText = 'Đã sao chép!';
+            copyButton.disabled = true;
+
+            setTimeout(() => {
+                copyButton.innerText = originalText;
+                copyButton.disabled = false;
+            }, 2000);
         }
 
         function loadData() {
