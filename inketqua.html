@@ -359,6 +359,24 @@
             line-height: 1.6;
         }
 
+        .zalo-open-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .zalo-open-btn:hover {
+            background: white;
+            color: #4CAF50;
+        }
+
         /* --- PRINT STYLES --- */
         @media print {
             body>*:not(.container) {
@@ -513,8 +531,9 @@
     <div id="zalo-blocker" class="zalo-blocker">
         <div class="zalo-blocker-content">
             <h2>Vui lòng mở bằng trình duyệt khác</h2>
-            <p>Trang web này không hỗ trợ trình duyệt tích hợp của Zalo. Để sử dụng đầy đủ chức năng (đặc biệt là In và
-                Lưu phiếu), vui lòng mở liên kết này bằng trình duyệt web như Chrome hoặc Safari.</p>
+            <p>Trang web này không hỗ trợ trình duyệt tích hợp của Zalo. Để sử dụng đầy đủ chức năng, vui lòng mở liên
+                kết này bằng trình duyệt web như Chrome hoặc Safari.</p>
+            <button class="zalo-open-btn" onclick="openInBrowser()">Mở bằng trình duyệt</button>
         </div>
     </div>
 
@@ -528,7 +547,7 @@
             <div class="search-container">
                 <h3>🔍 Tìm kiếm thông tin của bạn</h3>
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Nhập Số CCCD" />
+                    <input type="text" id="searchInput" placeholder="Nhập Số CCCD..." />
                     <button onclick="searchBooking()" class="search-btn">
                         <span>Tìm kiếm</span>
                     </button>
@@ -576,6 +595,10 @@
             if (/Zalo/i.test(userAgent)) {
                 document.getElementById('zalo-blocker').style.display = 'flex';
             }
+        }
+
+        function openInBrowser() {
+            window.open(window.location.href, '_blank');
         }
 
         function loadData() {
