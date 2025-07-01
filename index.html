@@ -270,6 +270,9 @@
                 action="https://docs.google.com/forms/d/e/1FAIpQLSe48u0TR0HEIoi_Hs7vOCvbMOToM-A5I2I3n9QW7qjj5t7SJg/formResponse"
                 target="hidden_iframe" onsubmit="return handleSubmit()">
 
+                <!-- Hidden input to hold the final combined value for the reason -->
+                <input type="hidden" name="entry.2093417730" id="final-reason-for-submission">
+
                 <!-- Họ và Tên -->
                 <div class="form-group">
                     <label for="fullName">👤 Họ và Tên</label>
@@ -324,7 +327,7 @@
                 <!-- Nội Dung Cần Đặt Lịch -->
                 <div class="form-group">
                     <label for="appointmentReason">📝 Nội Dung Cần Đặt Lịch</label>
-                    <select id="appointmentReason" name="entry.2093417730" onchange="checkSymptomOption()" required>
+                    <select id="appointmentReason" onchange="checkSymptomOption()" required>
                         <option value="">-- Chọn nội dung --</option>
                         <option value="Xin Giấy Chuyển Viện">Xin Giấy Chuyển Viện</option>
                         <option value="Khám sức khỏe">Khám sức khỏe</option>
@@ -335,7 +338,7 @@
                 <!-- Triệu Chứng -->
                 <div id="symptom-field" class="form-group" style="display: none;">
                     <label for="symptoms">🩺 Vui lòng mô tả triệu chứng của bạn</label>
-                    <textarea id="symptoms" name="entry.2093417730" rows="4"></textarea>
+                    <textarea id="symptoms" rows="4"></textarea>
                 </div>
 
                 <!-- Thời gian đặt -->
@@ -408,7 +411,6 @@
             const iframe = document.getElementById('hidden_iframe');
             iframe.addEventListener('load', handleFormSubmissionSuccess);
 
-            // Set min date for appointmentDate input to prevent selecting today or past dates
             const appointmentDateInput = document.getElementById('appointmentDate');
             const today = new Date();
             const tomorrow = new Date(today);
@@ -443,7 +445,7 @@
 
             const appointmentDay = new Date(appointmentDateValue).getUTCDay();
             if (appointmentDay === 0 || appointmentDay === 6) {
-                displayMessage("Bệnh viện không Khám Bệnh vào Thứ Bảy và Chủ Nhật. Vui lòng chọn ngày trong tuần.", "error");
+                displayMessage("Bệnh viện không làm việc vào Thứ Bảy và Chủ Nhật. Vui lòng chọn ngày trong tuần.", "error");
                 return false;
             }
 
@@ -461,7 +463,6 @@
                 return false;
             }
 
-            // Correctly parse date to avoid timezone issues and compare
             const parts = appointmentDateValue.split('-');
             const appointmentDate = new Date(parts[0], parts[1] - 1, parts[2]);
             const today = new Date();
@@ -478,6 +479,19 @@
             if (!validateForm()) {
                 return false;
             }
+
+            // Prepare the value for submission
+            const reasonSelect = document.getElementById('appointmentReason');
+            const symptomsTextarea = document.getElementById('symptoms');
+            const hiddenInput = document.getElementById('final-reason-for-submission');
+
+            if (reasonSelect.value === 'Triệu chứng') {
+                const symptomText = symptomsTextarea.value.trim();
+                hiddenInput.value = 'Triệu chứng' + (symptomText ? ' : ' + symptomText : '');
+            } else {
+                hiddenInput.value = reasonSelect.value;
+            }
+
             formSubmitted = true;
             return true;
         }
