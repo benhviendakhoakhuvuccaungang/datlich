@@ -530,10 +530,8 @@
             let matches = [];
             sheetData.forEach(row => {
                 const cccd = row['Số CCCD'] ? row['Số CCCD'].toString().toLowerCase() : '';
-                const hoTen = (row['Họ và tên'] || row['Họ và Tên'] || '').toLowerCase();
-                const sdt = row['Số điện thoại'] ? row['Số điện thoại'].toString() : '';
-
-                if (cccd === searchTerm || hoTen.includes(searchTerm) || sdt.includes(searchTerm)) {
+                // Only search by CCCD as per the updated placeholder text
+                if (cccd === searchTerm) {
                     matches.push(row);
                 }
             });
@@ -630,9 +628,11 @@
                 formattedNgaySinhQR = `${day}${month}${year}`;
             }
 
+            // Corrected QR Data format as per user request
             const qrData = `${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
             const qr = qrcode(0, 'L');
-            qr.addData(qrData);
+            // Add data with proper UTF-8 handling to prevent scanning errors
+            qr.addData(unescape(encodeURIComponent(qrData)));
             qr.make();
             document.getElementById('qrcode-container').innerHTML = qr.createImgTag(4, 8);
         }
@@ -697,7 +697,7 @@
             }
             const qrData = `${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
             const qr = qrcode(0, 'L');
-            qr.addData(qrData);
+            qr.addData(unescape(encodeURIComponent(qrData)));
             qr.make();
             const qrDataURL = qr.createDataURL(4, 8);
 
