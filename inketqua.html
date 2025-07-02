@@ -418,14 +418,14 @@
     <div class="container">
         <div class="header">
             <h1>TRA CỨU THÔNG TIN ĐẶT LỊCH</h1>
-            <p>Vui lòng nhập Số CCCD, Họ Tên hoặc Số Điện Thoại để tìm lịch hẹn mới nhất của bạn.</p>
+            <p>Vui lòng nhập Số CCCD để tìm lịch hẹn mới nhất của bạn.</p>
         </div>
 
         <div class="search-section">
             <div class="search-container">
                 <h3>🔍 Tìm kiếm thông tin của bạn</h3>
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Nhập Số CCCD, SĐT hoặc Họ Tên..." />
+                    <input type="text" id="searchInput" placeholder="Nhập Số CCCD..." />
                     <button onclick="searchBooking()" class="search-btn">
                         <span>Tìm kiếm</span>
                     </button>
@@ -630,7 +630,7 @@
                 formattedNgaySinhQR = `${day}${month}${year}`;
             }
 
-            const qrData = `|${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
+            const qrData = `${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
             const qr = qrcode(0, 'L');
             qr.addData(qrData);
             qr.make();
@@ -695,7 +695,7 @@
                 const year = ngaySinh.getFullYear();
                 formattedNgaySinhQR = `${day}${month}${year}`;
             }
-            const qrData = `|${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
+            const qrData = `${cccd || ''}|123456789|${hoTen || ''}|${formattedNgaySinhQR}|${gioiTinh || ''}|${diaChi || ''}|01012025||||`;
             const qr = qrcode(0, 'L');
             qr.addData(qrData);
             qr.make();
