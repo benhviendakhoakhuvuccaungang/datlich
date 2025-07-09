@@ -184,10 +184,10 @@
             margin: 20px 0 30px;
         }
         .stt-circle {
-            width: 150px;
-            height: 150px;
+            width: 160px; /* Increased size */
+            height: 160px; /* Increased size */
             border-radius: 50%;
-            border: 7px solid #4CAF50;
+            border: 8px solid #4CAF50; /* Increased border */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -196,14 +196,15 @@
             background: #e8f5e9;
         }
         .stt-circle .stt-number {
-            font-size: 3.5em;
+            font-size: 3.5em; /* Increased size */
             font-weight: bold;
             color: #388e3c;
         }
         .stt-circle .stt-label {
-            font-size: 1.5em;
-            color: #666;
-            margin-top: -10px;
+            font-size: 1.5em; /* Decreased size */
+            font-weight: bold;
+            color: #388e3c;
+            margin-top: -12px;
         }
 
         .ticket-details .info-row {
@@ -236,6 +237,9 @@
         .ticket-details .info-row .value.warning {
             color: #ff9800;
         }
+        .ticket-details .info-row .value.danger {
+            color: #d32f2f;
+        }
         .ticket-details .info-row .value.success {
             color: #4CAF50;
         }
@@ -248,6 +252,16 @@
         .qr-code-corner img {
             width: 80px !important;
             height: 80px !important;
+        }
+        
+        .cancellation-notice {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: #ffebee;
+            color: #d32f2f;
+            font-weight: bold;
+            border-radius: 8px;
         }
 
         .actions {
@@ -284,7 +298,7 @@
             background: linear-gradient(45deg, #4CAF50, #45a049);
         }
 
-        .note {
+       .note {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 10px;
@@ -321,10 +335,6 @@
             font-size: 0.9em;
             color: white;
             opacity: 0.8;
-        }
-        
-        .print-header {
-            display: none; /* Hidden by default */
         }
         
         /* Zalo Blocker Styles */
@@ -489,10 +499,19 @@
                         }
                     });
                 }
-                if (bookingCountToday >= 2) {
+                
+                if (bookingCountToday >= 3) {
+                    bestMatch.customStatus = 'Đã đặt 3 lần trong ngày !!! Hệ Thống hủy tiếp nhận';
+                    bestMatch.statusColor = 'danger';
+                    bestMatch.isCancelled = true;
+                } else if (bookingCountToday === 2) {
                     bestMatch.customStatus = 'Cảnh báo!!! Đã đặt 2 lần trong ngày.';
-                    bestMatch.statusColor = '#ff9800';
+                    bestMatch.statusColor = 'warning';
+                    bestMatch.isCancelled = false;
+                } else {
+                     bestMatch.isCancelled = false;
                 }
+
                 lastSearchResult = bestMatch;
                 displayRecord(bestMatch);
             } else {
@@ -518,7 +537,7 @@
             const gioKham = record['Thời gian khám'] || record['Giờ khám'];
             const stt = record['Số thứ tự'] || 'N/A';
             const trangThai = record.customStatus || record['Trạng thái'] || 'Đã xác nhận';
-            const statusClass = record.customStatus ? 'warning' : 'success';
+            const statusClass = record.statusColor || 'success';
 
             const recordHtml = `
                 <div class="ticket-layout" id="ticket-to-print">
@@ -558,6 +577,13 @@
             `;
             resultsDiv.innerHTML = recordHtml;
 
+            if (record.isCancelled) {
+                const cancellationNotice = document.createElement('div');
+                cancellationNotice.className = 'cancellation-notice';
+                cancellationNotice.innerText = 'Vui lòng quay lại đặt lịch vào ngày hôm sau.';
+                resultsDiv.appendChild(cancellationNotice);
+            }
+
             // --- Generate QR Code ---
             let formattedNgaySinhQR = '';
             if (ngaySinh) {
@@ -583,7 +609,6 @@
             if (isMobile) {
                 generateImage();
             } else {
-                // For desktop, create a dedicated printable area and print it
                 const printableArea = createPrintableTicketForDesktop();
                 document.body.appendChild(printableArea);
                 window.print();
@@ -609,9 +634,9 @@
             if (!ticketElement) return;
 
             html2canvas(ticketElement, {
-                scale: 3, // Higher scale for better quality
+                scale: 3,
                 useCORS: true,
-                backgroundColor: '#ffffff' // Ensure a white background
+                backgroundColor: '#ffffff'
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/jpeg', 0.95);
