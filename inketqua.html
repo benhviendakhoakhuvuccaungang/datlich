@@ -184,10 +184,10 @@
             margin: 20px 0 30px;
         }
         .stt-circle {
-            width: 160px; /* Increased size */
-            height: 160px; /* Increased size */
+            width: 160px; 
+            height: 160px; 
             border-radius: 50%;
-            border: 8px solid #4CAF50; /* Increased border */
+            border: 8px solid #4CAF50; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -206,7 +206,6 @@
             color: #388e3c;
             margin-top: -12px;
         }
-
         .ticket-details .info-row {
             display: flex;
             justify-content: space-between;
@@ -256,7 +255,7 @@
         
         .cancellation-notice {
             text-align: center;
-            margin-top: 15px;
+            margin: 0 0 20px 0; /* Adjusted margin */
             padding: 10px;
             background: #ffebee;
             color: #d32f2f;
@@ -298,7 +297,7 @@
             background: linear-gradient(45deg, #4CAF50, #45a049);
         }
 
-       .note {
+        .note {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 10px;
@@ -399,7 +398,8 @@
                 <p>
                     • Vui lòng có mặt tại phòng khám trước giờ hẹn 15-30 phút để làm thủ tục.<br>
                     • Mang theo giấy tờ tùy thân (CCCD/CMND) và thẻ BHYT (nếu có).<br>
-                    • Nếu Số Thứ Tự là "NULL", vui lòng bấm "TẢI LẠI TRANG" để cập nhật.<br>
+                    • Nếu Số Thứ Tự là "N/A", vui lòng bấm "TẢI LẠI TRANG" để cập nhật.<br>
+                    • Nếu sai thông tin vui lòng nhập lại.<br>
                     • Hệ thống chỉ lưu và hiển thị thông tin của lần đặt lịch gần nhất.
                 </p>
             </div>
@@ -407,7 +407,7 @@
     </div>
 
     <footer class="footer">
-        © Bản quyền thuộc Phòng CNTT - Bệnh viện ĐKKV Cầu Ngang - 2024
+        © Bản quyền thuộc Phòng CNTT - Bệnh viện ĐKKV Cầu Ngang - 2025
     </footer>
 
     <script>
@@ -539,6 +539,10 @@
             const trangThai = record.customStatus || record['Trạng thái'] || 'Đã xác nhận';
             const statusClass = record.statusColor || 'success';
 
+            const cancellationNoticeHtml = record.isCancelled
+                ? `<div class="cancellation-notice">Vui lòng quay lại đặt lịch vào ngày hôm sau.</div>`
+                : '';
+
             const recordHtml = `
                 <div class="ticket-layout" id="ticket-to-print">
                     <div class="qr-code-corner" id="qrcode-container"></div>
@@ -550,6 +554,7 @@
                         <h3>PHIẾU ĐẶT LỊCH</h3>
                         <span>(Mã phiếu: ${cccd || 'N/A'})</span>
                     </div>
+                    ${cancellationNoticeHtml}
                     <div class="stt-section">
                         <div class="stt-circle">
                             <div class="stt-number">${stt}</div>
@@ -576,13 +581,6 @@
                 </div>
             `;
             resultsDiv.innerHTML = recordHtml;
-
-            if (record.isCancelled) {
-                const cancellationNotice = document.createElement('div');
-                cancellationNotice.className = 'cancellation-notice';
-                cancellationNotice.innerText = 'Vui lòng quay lại đặt lịch vào ngày hôm sau.';
-                resultsDiv.appendChild(cancellationNotice);
-            }
 
             // --- Generate QR Code ---
             let formattedNgaySinhQR = '';
